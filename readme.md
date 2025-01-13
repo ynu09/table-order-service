@@ -21,3 +21,33 @@
 ### 결과물
 
 [그룹E-2_2주차_주행-1_산출물.pdf](https://github.com/user-attachments/files/18392405/E-2_2._.-1_.pdf)
+
+### 실행 방법
+
+<aside>
+
+1. Install TurtleBot3 Packages
+    
+    [https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/](https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/)
+    
+2. Install Simulation Package
+    
+    [https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#install-simulation-package](https://emanual.robotis.com/docs/en/platform/turtlebot3/simulation/#install-simulation-package)
+    
+</aside>
+
+```python
+# gazebo
+ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+
+# navi
+ros2 launch turtlebot3_navigation2 navigation2.launch.py
+
+# kitchen 
+ros2 run table_order kitchen
+
+# table
+ros2 run table_order table 
+
+# navigation_robot
+ros2 run table_order robot
