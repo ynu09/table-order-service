@@ -37,17 +37,27 @@
 </aside>
 
 ```python
+# bashrc 설정
+$ nano ~/.bashrc
+
+source ~/turtlebot3_ws/install/setup.bash
+export TURTLEBOT3_MODEL=burger
+source /usr/share/gazebo/setup.sh
+```
+
+```python
 # gazebo
-ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
+$ ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py
 
 # navi
-ros2 launch turtlebot3_navigation2 navigation2.launch.py
+$ ros2 launch turtlebot3_navigation2 navigation2.launch.py
 
 # kitchen 
-ros2 run table_order kitchen
+$ ros2 run table_order kitchen
 
 # table
-ros2 run table_order table 
+$ ros2 run table_order table 
 
 # navigation_robot
-ros2 run table_order robot
+$ ros2 run table_order robot
+```
