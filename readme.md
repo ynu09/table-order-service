@@ -21,6 +21,7 @@
 ### 결과물
 
 [그룹E-2_2주차_주행-1_산출물.pdf](https://github.com/user-attachments/files/18392405/E-2_2._.-1_.pdf)
+<iframe width="862" height="503" src="https://www.youtube.com/embed/J78Z3LMvhc0" title="table-order-service" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ### 실행 방법
 
