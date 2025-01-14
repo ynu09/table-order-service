@@ -20,7 +20,7 @@
 
 ### 결과물
 
-[그룹E-2_2주차_주행-1_산출물.pdf](https://github.com/user-attachments/files/18392405/E-2_2._.-1_.pdf)
+[View PDF Document](./그룹E-2_2주차_주행-1_산출물.pdf)
 
 ### 실행 영상
 
