@@ -9,12 +9,8 @@ from rclpy.qos import QoSProfile
 from std_msgs.msg import String
 
 
-# import table_order.test_util
-from table_order.kitchen_gui_order import MainPage
-from table_order.kitchen_gui_navi import SecondPage
-
-# from kitchen_gui_order import MainPage
-# from kitchen_gui_navi import SecondPage
+from .kitchen_gui_order import MainPage
+from .kitchen_gui_navi import SecondPage
 
 
 # class MyImage(QLabel):

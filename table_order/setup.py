@@ -19,9 +19,8 @@ setup(
     tests_require=["pytest"],
     entry_points={
         "console_scripts": [
-            # 'kitchen = table_order.order_page:main',
             "kitchen = table_order.kitchen_gui_main:main",
-            "table = table_order.table:main",
+            "table = table_order.table_gui:main",
             "robot = table_order.robot_gui:main",
         ],
     },

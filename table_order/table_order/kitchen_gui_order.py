@@ -8,7 +8,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from table_order.db import db
+from .db import db
 
 
 class MainPage(QWidget):

@@ -31,7 +31,7 @@ from tf2_ros import (
 )
 
 from table_msgs.srv import MenuOrder
-from table_order.db import db
+from .db import db
 
 
 class RobotNavi(Node):

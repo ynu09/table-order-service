@@ -20,13 +20,9 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from std_msgs.msg import String
 
-from table_order.kitchen_gui_admin import MenuManager, SettingsDialog
-from table_order.db import db
-from table_order.kitchen_node import KitchenNavi
-
-# from admin_page import MenuManager, SettingsDialog
-# from db import db
-# from kitchen_node import KitchenNavi
+from .kitchen_gui_admin import MenuManager, SettingsDialog
+from .db import db
+from .kitchen_node import KitchenNavi
 
 
 class MyImage(QLabel):

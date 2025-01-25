@@ -26,7 +26,6 @@ from rclpy.qos import (
 )
 import sys
 from std_msgs.msg import String
-
 from table_msgs.srv import MenuOrder
 
 

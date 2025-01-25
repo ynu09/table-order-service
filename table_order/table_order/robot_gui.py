@@ -3,8 +3,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import time
-from table_order.db import db
-from table_order.robot_node import RobotNavi
+from .db import db
+from .robot_node import RobotNavi
 import rclpy
 
 
