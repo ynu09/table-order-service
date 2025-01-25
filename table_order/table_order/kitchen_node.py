@@ -3,7 +3,6 @@ import re
 import time
 
 import rclpy
-import rclpy.time
 from geometry_msgs.msg import Point, Quaternion
 from nav2_msgs.action import NavigateToPose
 from nav2_msgs.srv import SetInitialPose
@@ -38,7 +37,7 @@ from .db import db
 class KitchenNavi(Node):
     def __init__(self):
         rclpy.init()
-        super().__init__("kitchen_navi")  # 노드명
+        super().__init__("kitchen_navi")
         self.num = 9
         self.time_logged = time.time()
         self.callback_group = ReentrantCallbackGroup()
@@ -74,38 +73,36 @@ class KitchenNavi(Node):
             "navigate_to_pose",
         )
 
-        # [Topic Publisher] fire alert
+        # [Topic Publisher] 화재 경보
         self.fire_alert_publisher = self.create_publisher(
             String,
             "fire",
             10,
         )
 
-        # Service: Server ; Menu 선언
+        # [Service Server] Menu Order
         self.menu_order_server = self.create_service(
-            MenuOrder,  # srv 타입
-            "menu_order",  # 서비스명
+            MenuOrder,  
+            "menu_order",
             self.get_menu_order,  # 콜백함수 (서비스 클라이언트-서비스 요청 있을 때마다)
             callback_group=self.callback_group,  # 멀티 스레드 병렬 콜백함수 실행
             qos_profile=QoSProfile(
-                # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
                 reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-                # history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
                 history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-                # depth=5,
-                # durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
                 durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
             ),
         )
         print("kitchen node init end")
 
-    # Service: Server ; Menu 콜백함수 (준비 예상시간)
+    # [Service 콜백함수] Menu 준비 예상시간
     def get_menu_order(self, request, response):
         print("get_menu_order start")
+
         # request
         self.data = json.loads(str(request.data).replace("'", '"'))
         print(self.data)
         # print(dict(self.data))
+
         # response
         self.table_num = int(self.data["table"])
         self.count, self.eta = self.calculate_predict_time(self.data["menu"])
@@ -132,87 +129,22 @@ class KitchenNavi(Node):
             ret += count
         return ret, ret * 5
 
-    # navigation initialize (초기화)
-    # def initialize_gui(self, gui):
-    #     self.gui = gui
-    #     # 초기 위치 설정 (주방)
-    #     while not self.set_initial_pose_service_client.wait_for_service(
-    #         timeout_sec=1.0
-    #     ):
-    #         self.get_logger().info(
-    #             "Service /set_initial_pose not available, waiting again..."
-    #         )
-    #     self.set_initial_pose(*self.runner.init_pose)
-
-    # navigation
-    # def clicked_point_callback(self, msg):
-    #     db_conn = db.db()
-    #     for i in range(self.num):
-    #         if self.runner.setting_poses[i]:
-    #             x = round(float(msg.point.x), 1)
-    #             y = round(float(msg.point.y), 1)
-    #             self.goal_poses[i][0] = x
-    #             self.goal_poses[i][1] = y
-
-    #             self.gui.labels[i].setText(
-    #                 QCoreApplication.translate(
-    #                     "MainWindow", f"x= {x:.1f}, y= {y:.1f}", None
-    #                 )
-    #             )
-    #             message = f"[GET] table_{i+1} is x= {x:.1f}, y= {y:.1f}"
-    #             # self.gui.textBrowser.append(message)
-    #             db_conn.log(message, 3)
-
-    #             self.runner.setting_poses[i] = False
-
     # 초기 입력값 주기
     def set_initial_pose(self, x, y, z, w):
-        db_conn = db()
         req = SetInitialPose.Request()
         req.pose.header.frame_id = "map"
         req.pose.pose.pose.position = Point(x=x, y=y, z=0.0)
         req.pose.pose.pose.orientation = Quaternion(x=0.0, y=0.0, z=z, w=w)
-        req.pose.pose.covariance = [
-            0.1,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.1,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.1,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.01,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.01,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.01,
-        ]
+        req.pose.pose.covariance = [0.1, 0.0, 0.0, 0.0, 0.0, 0.1,
+                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.01, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.01, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.01]
 
         future = self.set_initial_pose_service_client.call_async(req)
-
+        
+        db_conn = db()
         # 초기 위치 설정 성공 여부
         if future.result() is not None:
             message = "초기 위치 설정 성공"
