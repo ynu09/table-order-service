@@ -7,7 +7,6 @@ import json
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
-from collections import deque
 from PyQt5.QtWidgets import (
     QGroupBox,
     QVBoxLayout,

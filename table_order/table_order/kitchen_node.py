@@ -1,4 +1,3 @@
-# import debugpy
 import json
 import re
 import time
@@ -62,77 +61,24 @@ class KitchenNavi(Node):
             [-2.0, -0.5],  # kitchen(initial)
         ]
 
-        # Navigation clients (서비스)
+        # [Service Client] initial pose
         self.set_initial_pose_service_client = self.create_client(
             SetInitialPose,
             "/set_initial_pose",
-            # qos_profile=QoSProfile(
-            #     # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     # history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
-            #     history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-            #     depth=100,
-            #     durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     # durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
-            # ),
         )
 
-        # 액션
+        # [Action Client] navigate to pose
         self.navigate_to_pose_action_client = ActionClient(
             self,
             NavigateToPose,
             "navigate_to_pose",
-            # goal_service_qos_profile=QoSProfile(
-            #     # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     # history=QoSHistoryPolicy.KEEP_LAST,   #최신 값만 저장
-            #     history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-            #     # depth=5,
-            #     durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     # durability=QoSDurabilityPolicy.VOLATILE, # 구독 전 데이터 유지 안함
-            # ),
-            # feedback_sub_qos_profile=QoSProfile(
-            #     reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     # reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
-            #     # history=QoSHistoryPolicy.KEEP_ALL,    #전부 저장해놓고 나중에라도 다시 전송
-            #     depth=100,
-            #     # durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
-            # ),
-            # result_service_qos_profile=QoSProfile(
-            #     # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     # history=QoSHistoryPolicy.KEEP_LAST,   #최신 값만 저장
-            #     history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-            #     # depth=5,
-            #     durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     # durability=QoSDurabilityPolicy.VOLATILE, # 구독 전 데이터 유지 안함
-            # ),
         )
 
+        # [Topic Publisher] fire alert
         self.fire_alert_publisher = self.create_publisher(
             String,
             "fire",
             10,
-            # qos_profile=QoSProfile(
-            #     reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     # reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
-            #     # history=QoSHistoryPolicy.KEEP_ALL,    #전부 저장해놓고 나중에라도 다시 전송
-            #     depth=100,
-            #     # durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
-            # ),
-        )
-
-        # Topic2: Subscriber ; Battery 선언
-        self.no_battery_subscriber = self.create_subscription(
-            String,
-            "no_battery",
-            self.get_no_battery,
-            100,
-            # callback_group=self.callback_group,
         )
 
         # Service: Server ; Menu 선언
@@ -185,9 +131,6 @@ class KitchenNavi(Node):
 
             ret += count
         return ret, ret * 5
-
-    def get_no_battery(self, msg):
-        pass
 
     # navigation initialize (초기화)
     # def initialize_gui(self, gui):
