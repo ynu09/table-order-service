@@ -313,10 +313,3 @@ class SecondPage(QWidget):
         res = QMessageBox.warning(self, "화재발생", "화재발생\n테이블에 알립니다.")
         if res == QMessageBox.Ok:
             self.flag_fire = False
-
-        # message = "화재경보", "화재가 발생했습니다! 테이블에 알립니다."
-        # res = QMessageBox.warning(
-        #     self, "화재경보", "화재가 발생했습니다!\n테이블에 알립니다."
-        # )
-        # if res == QMessageBox.Ok:
-        #     self.flag_fire = False
