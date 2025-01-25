@@ -65,15 +65,6 @@ class RobotNavi(Node):
         self.set_initial_pose_service_client = self.create_client(
             SetInitialPose,
             "/set_initial_pose",
-            qos_profile=QoSProfile(
-                reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-                # reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-                history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
-                # history=QoSHistoryPolicy.KEEP_ALL,    #전부 저장해놓고 나중에라도 다시 전송
-                depth=100,
-                # durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-                durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
-            ),
         )
 
         # 액션
@@ -81,33 +72,6 @@ class RobotNavi(Node):
             self,
             NavigateToPose,
             "navigate_to_pose",
-            # goal_service_qos_profile=QoSProfile(
-            #     # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     # history=QoSHistoryPolicy.KEEP_LAST,   #최신 값만 저장
-            #     history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-            #     # depth=5,
-            #     durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     # durability=QoSDurabilityPolicy.VOLATILE, # 구독 전 데이터 유지 안함
-            # ),
-            # feedback_sub_qos_profile=QoSProfile(
-            #     reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     # reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
-            #     # history=QoSHistoryPolicy.KEEP_ALL,    #전부 저장해놓고 나중에라도 다시 전송
-            #     depth=100,
-            #     # durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
-            # ),
-            # result_service_qos_profile=QoSProfile(
-            #     # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-            #     reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-            #     # history=QoSHistoryPolicy.KEEP_LAST,   #최신 값만 저장
-            #     history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-            #     # depth=5,
-            #     durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-            #     # durability=QoSDurabilityPolicy.VOLATILE, # 구독 전 데이터 유지 안함
-            # ),
         )
 
         self.fire_alert_publisher = self.create_publisher(
@@ -123,65 +87,7 @@ class RobotNavi(Node):
                 durability=QoSDurabilityPolicy.VOLATILE,  # 구독 전 데이터 유지 안함
             ),
         )
-
-        # Topic2: Subscriber ; Battery 선언
-        # self.no_battery_subscriber = self.create_subscription(
-        #     String,
-        #     "no_battery",
-        #     self.get_no_battery,
-        #     100,
-        #     # callback_group=self.callback_group,
-        # )
-
-        # Service: Server ; Menu 선언
-        # self.menu_order_server = self.create_service(
-        #     MenuOrder,  # srv 타입
-        #     "menu_order",  # 서비스명
-        #     self.get_menu_order,  # 콜백함수 (서비스 클라이언트-서비스 요청 있을 때마다)
-        #     callback_group=self.callback_group,  # 멀티 스레드 병렬 콜백함수 실행
-        #     qos_profile=QoSProfile(
-        #         # reliability=QoSReliabilityPolicy.BEST_EFFORT,  # 속도 중점
-        #         reliability=QoSReliabilityPolicy.RELIABLE,  # 유실 방지
-        #         # history=QoSHistoryPolicy.KEEP_LAST,  # 최신 값만 저장
-        #         history=QoSHistoryPolicy.KEEP_ALL,  # 전부 저장해놓고 나중에라도 다시 전송
-        #         # depth=5,
-        #         durability=QoSDurabilityPolicy.TRANSIENT_LOCAL,  # 구독 전 메세지 유지
-        #         # durability=QoSDurabilityPolicy.VOLATILE, # 구독 전 데이터 유지 안함
-        #     ),
-        # )
         print("robot node init end")
-
-    # Service: Server ; Menu 콜백함수 (준비 예상시간)
-    def get_menu_order(self, request, response):
-        print("get_menu_order start")
-        # request
-        self.data = json.loads(str(request.data).replace("'", '"'))
-        print(self.data)
-
-        # response
-        self.table_num = int(self.data["table"])
-        self.count, self.eta = self.calculate_predict_time(self.data["menu"])
-        # 연산 결과값 저장
-        response.minute = self.eta
-
-        # 화면 표시
-        self.get_logger().info(
-            "[테이블 %d] : 메뉴 %d개 준비시간 %d분 정도 소요됩니다."
-            % (self.table_num, self.count, self.eta)
-        )
-        print("get_menu_order end")
-        db_conn = db()
-        db_conn.add_order(self.table_num, self.data["menu"])
-        return response
-
-    # 메뉴 준비 예상시간 계산 (개당 5분)
-    def calculate_predict_time(self, menu):
-        ret = 0
-        print("cal:", menu)
-        for _, count in menu.items():
-
-            ret += count
-        return ret, ret * 5
 
     # 초기 입력값 주기
     def set_initial_pose(self, x, y, z, w):
@@ -190,44 +96,12 @@ class RobotNavi(Node):
         req.pose.header.frame_id = "map"
         req.pose.pose.pose.position = Point(x=x, y=y, z=0.0)
         req.pose.pose.pose.orientation = Quaternion(x=0.0, y=0.0, z=z, w=w)
-        req.pose.pose.covariance = [
-            0.1,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.1,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.1,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.01,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.01,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.01,
-        ]
+        req.pose.pose.covariance = [0.1, 0.0, 0.0, 0.0, 0.0, 0.1,
+                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.1, 0.0, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.01, 0.0, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.01, 0.0,
+                                    0.0, 0.0, 0.0, 0.0, 0.0, 0.01]
 
         future = self.set_initial_pose_service_client.call_async(req)
 
